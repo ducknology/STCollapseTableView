@@ -85,6 +85,7 @@
  *	@param	animated	YES if you want the closing to be animated.
  */
 - (void)closeSection:(NSUInteger)sectionIndex animated:(BOOL)animated;
+- (void)closeAllSection:(NSUInteger)sectionIndex animated:(BOOL)animated;
 
 /**
  *	The will open or close the section whose index is in parameters regarding of its current state.

@@ -398,4 +398,18 @@
     
 }
 
+- (void)closeAllSection:(NSUInteger)sectionIndex animated:(BOOL)animated
+{
+	//NSLog(@"%@",self.sectionsStates);
+	for (int i = 0 ; i < [self.sectionsStates count];i++){
+		if ([[self.sectionsStates objectAtIndex:i]  isEqual: @1]) {
+			if (i != sectionIndex) {
+				[self setSectionAtIndex:i open:NO];
+				NSArray* indexPathsToDelete = [self indexPathsForRowsInSectionAtIndex:i];
+				[self deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationTop];
+			}
+		}
+	}
+}
+
 @end
