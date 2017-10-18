@@ -77,7 +77,6 @@
 	self.exclusiveSections = YES;
     self.shouldHandleHeadersTap = YES;
 	self.sectionsStates = [[NSMutableArray alloc] init];
-    self.collapseRowsAnimation = UITableViewRowAnimationTop;
 }
 
 - (void)setDataSource:(id <UITableViewDataSource>)newDataSource
@@ -133,7 +132,7 @@
     {
         return;
     }
-    
+	
 	if (self.exclusiveSections)
     {
         NSUInteger openedSection = [self openedSection];
@@ -184,24 +183,16 @@
             [self reloadData];
         }
 	}
-    
-    if ([self.delegate respondsToSelector:@selector(didToggleSection:collapsed:)])
-    {
-        [self.collapseSectionDelegate didToggleSection:sectionIndex collapsed:NO];
-    }
 }
 
 - (void)closeSection:(NSUInteger)sectionIndex animated:(BOOL)animated
 {
     [self setSectionAtIndex:sectionIndex open:NO];
-    if ([self.delegate respondsToSelector:@selector(didToggleSection:collapsed:)])
-    {
-        [self.collapseSectionDelegate didToggleSection:sectionIndex collapsed:YES];
-    }
+	
 	if (animated)
     {
         NSArray* indexPathsToDelete = [self indexPathsForRowsInSectionAtIndex:sectionIndex];
-        [self deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:self.collapseRowsAnimation];
+        [self deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationTop];
     }
     else
     {
@@ -280,7 +271,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	int nbSection = [self.collapseDataSource numberOfSectionsInTableView:tableView];
+	NSInteger nbSection = [self.collapseDataSource numberOfSectionsInTableView:tableView];
     
 	while (nbSection < [self.sectionsStates count])
     {
@@ -316,9 +307,9 @@
         
         if (!tapGestureFound)
         {
+            [view setTag:section];
             [view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)]];
         }
-        [view setTag:section];
     }
     
     return view;
@@ -333,6 +324,8 @@
     {
         [self toggleSection:(NSUInteger)index animated:YES];
     }
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"comMenuAction" object:@[@0,[NSString stringWithFormat:@"%i",(int)index]] userInfo:nil]; //section action
 }
 
 - (NSArray*)indexPathsForRowsInSectionAtIndex:(NSUInteger)sectionIndex
@@ -380,22 +373,6 @@
     }
     
     return NSNotFound;
-}
-
--(void)closeAllSectionsAnimated:(BOOL)animated
-{
-    if (!self.exclusiveSections)
-    {
-        for (NSUInteger index = 0 ; index < [self.sectionsStates count] ; index++)
-        {
-            if ([[self.sectionsStates objectAtIndex:index] boolValue])
-            {
-                [self closeSection:index animated:animated];
-                
-            }
-        }
-    }
-    
 }
 
 - (void)closeAllSection:(NSUInteger)sectionIndex animated:(BOOL)animated

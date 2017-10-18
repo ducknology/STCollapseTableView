@@ -30,11 +30,6 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol STCollapseTableViewSectionDelegate <NSObject>
-@optional
--(void)didToggleSection:(NSUInteger)sectionIndex collapsed:(BOOL)collapsed;
-@end
-
 /**
  *	STCollapseTableView is a UITableView subclass that automatically collapse and/or expand your sections.
  *
@@ -44,23 +39,11 @@
 @interface STCollapseTableView : UITableView
 
 /**
- * This delegate allows to manage action when a section is toggle (collapsed or expanded)
- * Example : change the style of your UIView's Section
- */
-@property (nonatomic, weak) id <STCollapseTableViewSectionDelegate> collapseSectionDelegate;
-
-/**
  *	This property allow to enable/disable the exclusivity.
  *  If YES, only one section is allowed to be open.
  *  Default value is YES.
  */
 @property (nonatomic, assign) BOOL exclusiveSections;
-
-/**
- * This property allow to customize UITableViewRowAnimation on collapsing
- * Default value is UITableViewRowAnimationTop
- */
-@property (nonatomic, assign) UITableViewRowAnimation collapseRowsAnimation;
 
 /**
  *	This property allows STCollapseTableView to automatically handle tap on headers in order to collapse or expand sections.
@@ -103,12 +86,5 @@
  *	@return	YES if the section is open.
  */
 - (BOOL)isOpenSection:(NSUInteger)sectionIndex;
-
-/**
- * This methods will close all sections if table is not in exclusiveSections mode
- * (for a reload data for instance)
- *
- */
--(void)closeAllSectionsAnimated:(BOOL)animated;
 
 @end
